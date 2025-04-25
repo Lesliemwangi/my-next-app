@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { z } from 'zod';
 import { toast, Toaster } from 'react-hot-toast';
 import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 const registrationSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),
@@ -27,6 +28,7 @@ export default function Registration() {
 
   const [formErrors, setFormErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -46,8 +48,7 @@ export default function Registration() {
         return;
       }
       setFormErrors({});
-      
-      // Make sure you're using the correct API route path
+
       const response = await axios.post('/api/register', {
         firstName: formData.firstName,
         lastName: formData.lastName,
@@ -64,6 +65,9 @@ export default function Registration() {
         password: '',
         confirmPassword: '',
       });
+      setTimeout(() => {
+        router.push('/login'); 
+      }, 1500);
     } catch (error) {
       console.error('Registration error:', error);
       const errorMessage = error.response?.data?.message || 'Registration failed. Please try again.';
